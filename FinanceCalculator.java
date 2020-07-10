@@ -4,10 +4,9 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -15,34 +14,21 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import static java.lang.String.valueOf;
 
 
 public class FinanceCalculator extends Application {
-    Scene scene1, scene2,scene3,scene4;
+    Scene compoundscene1, compoundscene2,mortgagescene,loanscene;
+    Stage mainStage;
     @Override
-    public void start(Stage mainStage) {
+    public void start(Stage primaryStage) {
+        mainStage = primaryStage;
         mainStage.setTitle("Financial Calculator");
 
         //adding an anchorpane to hold everything related to scene1
         AnchorPane compoundSavingsOne = new AnchorPane();
         //adding a Pane to hold the Labels and Textfields related to user input in Compound Savings
         Pane inputSavingsOne = new Pane();
-
-        //to add an HBox for the buttons on top
-        HBox top = new HBox();
-        Button b1 = new Button("Compound Savings");
-        Button b2 = new Button("Compound Savings w/Payment");
-        Button b3 = new Button("Mortgage");
-        Button b4 = new Button("Loan");
-        Button b5 = new Button("Help");
-        b1.setOnAction(e -> mainStage.setScene(scene1));
-        b2.setOnAction(e -> mainStage.setScene(scene2));
-        top.setSpacing(60);
-        top.setAlignment(Pos.CENTER);
-        top.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY,Insets.EMPTY)));
-        top.getChildren().addAll(b1,b2,b3,b4,b5);
-        top.setPadding(new Insets(20,40,20,40));
-
 
         Label lblheading1 = new Label("Compound Savings");
         lblheading1.setLayoutX(180);
@@ -64,10 +50,10 @@ public class FinanceCalculator extends Application {
         lblFutureVal.setLayoutX(30);
         lblFutureVal.setLayoutY(260);
 
-        TextField tfStartPrincipal = new TextField();
-        tfStartPrincipal.setPrefWidth(300);
-        tfStartPrincipal.setLayoutY(105);
-        tfStartPrincipal.setLayoutX(170);
+        TextField tfStartPrinciple = new TextField();
+        tfStartPrinciple.setPrefWidth(300);
+        tfStartPrinciple.setLayoutY(105);
+        tfStartPrinciple.setLayoutX(170);
 
         TextField tfPeriods = new TextField();
         tfPeriods.setPrefWidth(300);
@@ -90,45 +76,58 @@ public class FinanceCalculator extends Application {
         calculate.setLayoutX(180);
         calculate.setLayoutY(340);
 
-        inputSavingsOne.getChildren().addAll(lblheading1,lblStartPrincipal,lblPeriods,lblInterest,lblFutureVal,tfStartPrincipal,tfPeriods,tfInterest,tfFutureVal,calculate);
+        //the code related to calculations of compound savings without payment
+
+        calculate.setOnAction( e -> {
+            try {
+                if (tfFutureVal.getText().isEmpty()) {
+                    Double futureVal = Double.valueOf(getsimpleFutureVal(Double.parseDouble(tfStartPrinciple.getText()), Double.parseDouble(tfPeriods.getText()), Double.parseDouble(tfInterest.getText())));
+                    tfFutureVal.setText(futureVal.toString());
+                } else if (tfPeriods.getText().isEmpty()) {
+                    Double periods = Double.valueOf(getsimplePeriods(Double.parseDouble(tfStartPrinciple.getText()), Double.parseDouble(tfInterest.getText()), Double.parseDouble(tfFutureVal.getText())));
+                    tfPeriods.setText(periods.toString());
+                } else if (tfInterest.getText().isEmpty()) {
+                    Double interest = Double.valueOf(getsimpleInterest(Double.parseDouble(tfStartPrinciple.getText()), Double.parseDouble(tfPeriods.getText()), Double.parseDouble(tfFutureVal.getText())));
+                    tfInterest.setText(interest.toString());
+                } else if (tfStartPrinciple.getText().isEmpty()) {
+                    Double startprinciple = Double.valueOf(getsimpleStartPrinicple(Double.parseDouble(tfPeriods.getText()), Double.parseDouble(tfInterest.getText()), Double.parseDouble(tfFutureVal.getText())));
+                    tfStartPrinciple.setText(startprinciple.toString());
+                }
+            }catch(NumberFormatException e1){
+                Alert error = new Alert(Alert.AlertType.ERROR);
+                error.setTitle("Error");
+                error.setHeaderText("Please leave only 1 field empty !");
+                error.setContentText(" * also make sure you enter ONLY Numbers ");
+                error.showAndWait();
+            }
+
+        });
+        inputSavingsOne.getChildren().addAll(lblheading1,lblStartPrincipal,lblPeriods,lblInterest,lblFutureVal,tfStartPrinciple,tfPeriods,tfInterest,tfFutureVal,calculate);
         inputSavingsOne.setLayoutX(40);
         inputSavingsOne.setLayoutY(120);
         inputSavingsOne.setPrefSize(500,400);
         inputSavingsOne.setPadding(new Insets(20,40,20,40));
         inputSavingsOne.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(20),Insets.EMPTY)));
 
-
         compoundSavingsOne.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
-        compoundSavingsOne.getChildren().addAll(top,inputSavingsOne,addCustKeyboard());
-        scene1= new Scene(compoundSavingsOne, 925, 660);
+        compoundSavingsOne.getChildren().addAll(addButtons(),inputSavingsOne,addCustKeyboard());
 
-        //anchorpane to hold everything related to scene2
+        compoundscene1= new Scene(compoundSavingsOne, 925, 660);
+
+
+        //Anchorpane to hold everything related to scene2
+
         AnchorPane compoundSavingsTwo = new AnchorPane();
         //adding a Pane to hold the Labels and Textfields related to user input in Compound Savings with Payment
         Pane inputSavingsTwo = new Pane();
-
-        //to add an HBox for the buttons on top
-        HBox topTwo = new HBox();
-        Button b12 = new Button("Compound Savings");
-        Button b22 = new Button("Compound Savings w/Payment");
-        Button b32 = new Button("Mortgage");
-        Button b42 = new Button("Loan");
-        Button b52 = new Button("Help");
-        b12.setOnAction(e -> mainStage.setScene(scene1));
-        b22.setOnAction(e -> mainStage.setScene(scene2));
-        topTwo.setSpacing(60);
-        topTwo.setAlignment(Pos.CENTER);
-        topTwo.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY,Insets.EMPTY)));
-        topTwo.getChildren().addAll(b12,b22,b32,b42,b52);
-        topTwo.setPadding(new Insets(20,40,20,40));
 
         Label lblheading2 = new Label("Compound Savings w/Payment");
         lblheading2.setLayoutX(160);
         lblheading2.setLayoutY(40);
 
-        Label lblStartPrincipal2 = new Label("Start Principal");
-        lblStartPrincipal2.setLayoutX(30);
-        lblStartPrincipal2.setLayoutY(110);
+        Label lblStartPrinciple2 = new Label("Start Principal");
+        lblStartPrinciple2.setLayoutX(30);
+        lblStartPrinciple2.setLayoutY(110);
 
         Label lblPeriods2 = new Label("Periods(In Years)");
         lblPeriods2.setLayoutX(30);
@@ -142,10 +141,10 @@ public class FinanceCalculator extends Application {
         lblFutureVal2.setLayoutX(30);
         lblFutureVal2.setLayoutY(260);
 
-        TextField tfStartPrincipal2 = new TextField();
-        tfStartPrincipal2.setPrefWidth(300);
-        tfStartPrincipal2.setLayoutY(105);
-        tfStartPrincipal2.setLayoutX(170);
+        TextField tfStartPrinciple2 = new TextField();
+        tfStartPrinciple2.setPrefWidth(300);
+        tfStartPrinciple2.setLayoutY(105);
+        tfStartPrinciple2.setLayoutX(170);
 
         TextField tfPeriods2 = new TextField();
         tfPeriods2.setPrefWidth(300);
@@ -188,25 +187,175 @@ public class FinanceCalculator extends Application {
         calculate2.setLayoutX(180);
         calculate2.setLayoutY(420);
 
-        inputSavingsTwo.getChildren().addAll(lblheading2,lblStartPrincipal2,lblPeriods2,lblInterest2,lblFutureVal2,tfStartPrincipal2,tfPeriods2,tfInterest2,tfFutureVal2,tfPMT,lblPMT,lblradio,calculate2,rb1,rb2);
+        inputSavingsTwo.getChildren().addAll(lblheading2,lblStartPrinciple2,lblPeriods2,lblInterest2,lblFutureVal2,tfStartPrinciple2,tfPeriods2,tfInterest2,tfFutureVal2,tfPMT,lblPMT,lblradio,calculate2,rb1,rb2);
         inputSavingsTwo.setLayoutX(40);
         inputSavingsTwo.setLayoutY(120);
         inputSavingsTwo.setPrefSize(500,500);
         inputSavingsTwo.setPadding(new Insets(20,40,20,40));
         inputSavingsTwo.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(20),Insets.EMPTY)));
+
         compoundSavingsTwo.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE,CornerRadii.EMPTY,Insets.EMPTY)));
-        compoundSavingsTwo.getChildren().addAll(topTwo,inputSavingsTwo,addCustKeyboard());
+        compoundSavingsTwo.getChildren().addAll(addButtons(),inputSavingsTwo,addCustKeyboard());
 
-        scene2= new Scene(compoundSavingsTwo,925,660);
+        compoundscene2= new Scene(compoundSavingsTwo,925,660);
+
+        //AnchorPane to anchor scene 3
+        AnchorPane mortgage = new AnchorPane();
+
+        Pane inputMortgage = new Pane();
+
+        Label lblheading3 = new Label("Mortgage Calculator");
+        lblheading3.setLayoutX(160);
+        lblheading3.setLayoutY(40);
+
+        Label lblhomePrice = new Label("Home Price");
+        lblhomePrice.setLayoutX(30);
+        lblhomePrice.setLayoutY(110);
+
+        Label lbldownPaymor = new Label("Down Payment");
+        lbldownPaymor.setLayoutX(30);
+        lbldownPaymor.setLayoutY(160);
+
+        Label lblMorLoanTerm = new Label("Loan Term");
+        lblMorLoanTerm.setLayoutX(30);
+        lblMorLoanTerm.setLayoutY(210);
+
+        Label lblInterestRateMor= new Label("Interest Rate");
+        lblInterestRateMor.setLayoutX(30);
+        lblInterestRateMor.setLayoutY(260);
+
+        TextField tfhomePrice = new TextField();
+        tfhomePrice.setPrefWidth(300);
+        tfhomePrice.setLayoutY(105);
+        tfhomePrice.setLayoutX(170);
+
+        TextField tfdownPaymentMor = new TextField();
+        tfdownPaymentMor.setPrefWidth(300);
+        tfdownPaymentMor.setLayoutY(155);
+        tfdownPaymentMor.setLayoutX(170);
+
+        TextField tfMorloanTerm = new TextField();
+        tfMorloanTerm.setPrefWidth(300);
+        tfMorloanTerm.setLayoutY(205);
+        tfMorloanTerm.setLayoutX(170);
+
+        TextField tfinterestRate = new TextField();
+        tfinterestRate.setPrefWidth(300);
+        tfinterestRate.setLayoutY(255);
+        tfinterestRate.setLayoutX(170);
+
+        Button calculate3 = new Button("Calculate");
+        calculate3.setPrefWidth(100);
+        calculate3.setPrefHeight(30);
+        calculate3.setLayoutX(180);
+        calculate3.setLayoutY(340);
+
+        inputMortgage.getChildren().addAll(lblheading3,lblhomePrice,lbldownPaymor,lblMorLoanTerm,lblInterestRateMor,tfhomePrice,tfdownPaymentMor,tfinterestRate,tfMorloanTerm,calculate3);
+        inputMortgage.setLayoutX(40);
+        inputMortgage.setLayoutY(120);
+        inputMortgage.setPrefSize(500,400);
+        inputMortgage.setPadding(new Insets(20,40,20,40));
+        inputMortgage.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(20),Insets.EMPTY)));
+
+        mortgage.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        mortgage.getChildren().addAll(addButtons(),inputMortgage,addCustKeyboard());
+
+        mortgagescene= new Scene(mortgage,925,660);
+
+        //AnchorPane to anchor scene 4
+        AnchorPane loan = new AnchorPane();
+
+        Pane inputLoan = new Pane();
+
+        Label lblheading4 = new Label("Loan Calculator");
+        lblheading4.setLayoutX(160);
+        lblheading4.setLayoutY(40);
+
+        Label lblPrice = new Label("Price");
+        lblPrice.setLayoutX(30);
+        lblPrice.setLayoutY(110);
+
+        Label lblLoanTerm = new Label("Loan Term");
+        lblLoanTerm.setLayoutX(30);
+        lblLoanTerm.setLayoutY(160);
+
+        Label lbldownpayloan = new Label("Down Payment");
+        lbldownpayloan.setLayoutX(30);
+        lbldownpayloan.setLayoutY(210);
+
+        Label lblloanInterest= new Label("Interest Rate");
+        lblloanInterest.setLayoutX(30);
+        lblloanInterest.setLayoutY(260);
+
+        TextField tfPrice = new TextField();
+        tfPrice.setPrefWidth(300);
+        tfPrice.setLayoutY(105);
+        tfPrice.setLayoutX(170);
+
+        TextField tfloanTerm = new TextField();
+        tfloanTerm.setPrefWidth(300);
+        tfloanTerm.setLayoutY(155);
+        tfloanTerm.setLayoutX(170);
+
+        TextField tfdownpayloan = new TextField();
+        tfdownpayloan.setPrefWidth(300);
+        tfdownpayloan.setLayoutY(205);
+        tfdownpayloan.setLayoutX(170);
+
+        TextField tfloanInterest = new TextField();
+        tfloanInterest.setPrefWidth(300);
+        tfloanInterest.setLayoutY(255);
+        tfloanInterest.setLayoutX(170);
+
+        Button calculate4 = new Button("Calculate");
+        calculate4.setPrefWidth(100);
+        calculate4.setPrefHeight(30);
+        calculate4.setLayoutX(180);
+        calculate4.setLayoutY(340);
+
+        inputLoan.getChildren().addAll(lblheading4,lblPrice,lbldownpayloan,lblLoanTerm,lblloanInterest,tfPrice,tfdownpayloan,tfloanInterest,tfloanTerm,calculate4);
+        inputLoan.setLayoutX(40);
+        inputLoan.setLayoutY(120);
+        inputLoan.setPrefSize(500,400);
+        inputLoan.setPadding(new Insets(20,40,20,40));
+        inputLoan.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(20),Insets.EMPTY)));
+
+        loan.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, CornerRadii.EMPTY, Insets.EMPTY)));
+        loan.getChildren().addAll(addButtons(),inputLoan,addCustKeyboard());
+
+        loanscene = new Scene(loan,925,660);
 
 
-        mainStage.setScene(scene1);
+        mainStage.setScene(compoundscene1);
         mainStage.show();
     }
-    //  Custom Keyboard
+    public  HBox addButtons(){
+        //to add an HBox for the buttons on top
+        HBox top = new HBox();
+        Button b1 = new Button("Compound Savings");
+        Button b2 = new Button("Compound Savings w/Payment");
+        Button b3 = new Button("Mortgage");
+        Button b4 = new Button("Loan");
+        Button b5 = new Button("Help");
+        b1.setOnAction(e -> { mainStage.setScene(compoundscene1);
+            DropShadow shadow = new DropShadow();
+            b1.setBackground(new Background(new BackgroundFill(Color.web("#d8f2ec"), CornerRadii.EMPTY, Insets.EMPTY)));
+            b1.setEffect(shadow);
+        });
+        b2.setOnAction(e -> mainStage.setScene(compoundscene2));
+        b3.setOnAction(e -> mainStage.setScene(mortgagescene));
+        b4.setOnAction(e -> mainStage.setScene(loanscene));
+        top.setSpacing(60);
+        top.setAlignment(Pos.CENTER);
+        top.setBackground(new Background(new BackgroundFill(Color.BEIGE, CornerRadii.EMPTY,Insets.EMPTY)));
+        top.getChildren().addAll(b1,b2,b3,b4,b5);
+        top.setPadding(new Insets(20,40,20,40));
+    return top;
+    }
+    // Onscreen Keyboard
     public GridPane addCustKeyboard(){
         GridPane keyboard=new GridPane();
-        //  Custom Keyboard Buttons
+        //  Onscreen Keyboard Buttons
         Button num0= new Button("0");
         Button num1= new Button("1");
         Button num2= new Button("2");
@@ -217,10 +366,9 @@ public class FinanceCalculator extends Application {
         Button num7= new Button("7");
         Button num8= new Button("8");
         Button num9= new Button("9");
-        Button dot= new Button(".");
-        Button del= new Button("Delete");
-
-        //  Setting the Calculator -- Column,Row (Embedding)
+        Button dot = new Button(".");
+        Button del = new Button("Delete");
+        // Designing the layout of the keyboard
         keyboard.setLayoutX(600);
         keyboard.setLayoutY(150);
         keyboard.setHgap(10);
@@ -240,6 +388,28 @@ public class FinanceCalculator extends Application {
         keyboard.add(del,2,3);
         return keyboard;
     }
+
+    //method to calculate future value in the compound savings without payment
+    public static String getsimpleFutureVal(double startprincipal ,double periods ,double interest){
+        double futurevalue = startprincipal * (Math.pow((1+((interest/100)/12)),12*periods));
+        return String.valueOf(Math.round(futurevalue *100.0)/100.0);
+    }
+    //method to calculate periods in the compound savings without payment
+    public static String getsimplePeriods(double startprinciple,double interest , double futurevalue){
+        double periods = (Math.log(futurevalue/startprinciple))/(12*(Math.log(1+((interest/100)/12))));
+        return String.valueOf(Math.round(periods * 100.0)/100.0);
+    }
+    //method to calculate interest in the compound savings without payment
+    public static String getsimpleInterest(double startpriciple,double periods,double futurevalue){
+        double interest =(12*(Math.pow((futurevalue/startpriciple),(1/(12*periods)))-1))*100;
+        return String.valueOf(Math.round(interest * 100.0)/100.0);
+    }
+    //method to calculate start principle in the compound savings without payment
+    public static String getsimpleStartPrinicple(double periods,double interest,double futurevalue){
+        double startprinciple = futurevalue/Math.pow((1+(interest/100)/12),12*periods);
+        return String.valueOf(Math.round(startprinciple * 100.0)/100.0);
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
