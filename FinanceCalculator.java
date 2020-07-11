@@ -13,7 +13,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-
 import static java.lang.String.valueOf;
 
 
@@ -77,20 +76,23 @@ public class FinanceCalculator extends Application {
         calculate.setLayoutY(340);
 
         //the code related to calculations of compound savings without payment
-
         calculate.setOnAction( e -> {
             try {
                 if (tfFutureVal.getText().isEmpty()) {
-                    Double futureVal = Double.valueOf(getsimpleFutureVal(Double.parseDouble(tfStartPrinciple.getText()), Double.parseDouble(tfPeriods.getText()), Double.parseDouble(tfInterest.getText())));
+                    Double futureVal = Double.valueOf(getsimpleFutureVal(Double.parseDouble(tfStartPrinciple.getText()),
+                                       Double.parseDouble(tfPeriods.getText()), Double.parseDouble(tfInterest.getText())));
                     tfFutureVal.setText(futureVal.toString());
                 } else if (tfPeriods.getText().isEmpty()) {
-                    Double periods = Double.valueOf(getsimplePeriods(Double.parseDouble(tfStartPrinciple.getText()), Double.parseDouble(tfInterest.getText()), Double.parseDouble(tfFutureVal.getText())));
+                    Double periods = Double.valueOf(getsimplePeriods(Double.parseDouble(tfStartPrinciple.getText()),
+                            Double.parseDouble(tfInterest.getText()), Double.parseDouble(tfFutureVal.getText())));
                     tfPeriods.setText(periods.toString());
                 } else if (tfInterest.getText().isEmpty()) {
-                    Double interest = Double.valueOf(getsimpleInterest(Double.parseDouble(tfStartPrinciple.getText()), Double.parseDouble(tfPeriods.getText()), Double.parseDouble(tfFutureVal.getText())));
+                    Double interest = Double.valueOf(getsimpleInterest(Double.parseDouble(tfStartPrinciple.getText()),
+                            Double.parseDouble(tfPeriods.getText()), Double.parseDouble(tfFutureVal.getText())));
                     tfInterest.setText(interest.toString());
                 } else if (tfStartPrinciple.getText().isEmpty()) {
-                    Double startprinciple = Double.valueOf(getsimpleStartPrinicple(Double.parseDouble(tfPeriods.getText()), Double.parseDouble(tfInterest.getText()), Double.parseDouble(tfFutureVal.getText())));
+                    Double startprinciple = Double.valueOf(getsimpleStartPrinicple(Double.parseDouble(tfPeriods.getText()),
+                            Double.parseDouble(tfInterest.getText()), Double.parseDouble(tfFutureVal.getText())));
                     tfStartPrinciple.setText(startprinciple.toString());
                 }
             }catch(NumberFormatException e1){
@@ -102,7 +104,8 @@ public class FinanceCalculator extends Application {
             }
 
         });
-        inputSavingsOne.getChildren().addAll(lblheading1,lblStartPrincipal,lblPeriods,lblInterest,lblFutureVal,tfStartPrinciple,tfPeriods,tfInterest,tfFutureVal,calculate);
+        inputSavingsOne.getChildren().addAll(lblheading1,lblStartPrincipal,lblPeriods,lblInterest,lblFutureVal,
+                                                    tfStartPrinciple,tfPeriods,tfInterest,tfFutureVal,calculate);
         inputSavingsOne.setLayoutX(40);
         inputSavingsOne.setLayoutY(120);
         inputSavingsOne.setPrefSize(500,400);
@@ -115,7 +118,7 @@ public class FinanceCalculator extends Application {
         compoundscene1= new Scene(compoundSavingsOne, 925, 660);
 
 
-        //Anchorpane to hold everything related to scene2
+        //Anchorpane to hold everything related to CompoundSavings2 scene
 
         AnchorPane compoundSavingsTwo = new AnchorPane();
         //adding a Pane to hold the Labels and Textfields related to user input in Compound Savings with Payment
@@ -139,7 +142,7 @@ public class FinanceCalculator extends Application {
 
         Label lblFutureVal2= new Label("Future Value");
         lblFutureVal2.setLayoutX(30);
-        lblFutureVal2.setLayoutY(260);
+        lblFutureVal2.setLayoutY(310);
 
         TextField tfStartPrinciple2 = new TextField();
         tfStartPrinciple2.setPrefWidth(300);
@@ -158,39 +161,73 @@ public class FinanceCalculator extends Application {
 
         TextField tfFutureVal2 = new TextField();
         tfFutureVal2.setPrefWidth(300);
-        tfFutureVal2.setLayoutY(255);
+        tfFutureVal2.setLayoutY(305);
         tfFutureVal2.setLayoutX(170);
 
         TextField tfPMT = new TextField();
         tfPMT.setPrefWidth(300);
-        tfPMT.setLayoutY(305);
+        tfPMT.setLayoutY(255);
         tfPMT.setLayoutX(170);
 
         Label lblPMT= new Label("PMT(Annuity)");
         lblPMT.setLayoutX(30);
-        lblPMT.setLayoutY(310);
-
-        Label lblradio = new Label("PMT made at");
-        lblradio.setLayoutX(30);
-        lblradio.setLayoutY(360);
-
-        RadioButton rb1 = new RadioButton("Beginning");
-        rb1.setLayoutX(170);
-        rb1.setLayoutY(360);
-        RadioButton rb2 = new RadioButton("End");
-        rb2.setLayoutX(280);
-        rb2.setLayoutY(360);
+        lblPMT.setLayoutY(260);
 
         Button calculate2 = new Button("Calculate");
         calculate2.setPrefWidth(100);
         calculate2.setPrefHeight(30);
         calculate2.setLayoutX(180);
-        calculate2.setLayoutY(420);
+        calculate2.setLayoutY(380);
 
-        inputSavingsTwo.getChildren().addAll(lblheading2,lblStartPrinciple2,lblPeriods2,lblInterest2,lblFutureVal2,tfStartPrinciple2,tfPeriods2,tfInterest2,tfFutureVal2,tfPMT,lblPMT,lblradio,calculate2,rb1,rb2);
+        //the code related to calculations of compound savings WITH Payment
+        calculate2.setOnAction( e1 -> {
+            try {  if (tfStartPrinciple2.getText().isEmpty()) {
+                    Double startprin2 = Double.valueOf(getcompoundStartPrinciple(Double.parseDouble(tfFutureVal2.getText()),
+                                        Double.parseDouble(tfInterest2.getText()),Double.parseDouble(tfPeriods2.getText()),
+                                        Double.parseDouble(tfPMT.getText())));
+                        tfStartPrinciple2.setText(startprin2.toString());
+                } else if (tfFutureVal2.getText().isEmpty()) {
+                    Double futureval2 = Double.valueOf(getcompoundFutureVal(Double.parseDouble(tfStartPrinciple2.getText()),
+                                        Double.parseDouble(tfInterest2.getText()), Double.parseDouble(tfPeriods2.getText()),
+                                        Double.parseDouble(tfPMT.getText())));
+                                tfFutureVal2.setText(futureval2.toString());
+                } else if (tfPeriods2.getText().isEmpty()) {
+                    Double periods = Double.valueOf(getcompoundPeriods(Double.parseDouble(tfStartPrinciple2.getText()),
+                                     Double.parseDouble(tfInterest2.getText()), Double.parseDouble(tfPMT.getText()),
+                                     Double.parseDouble(tfFutureVal2.getText())));
+                                tfPeriods2.setText(periods.toString());
+                } else if (tfPMT.getText().isEmpty()) {
+                    Double payment = Double.valueOf(getcompoundPMT(Double.parseDouble(tfStartPrinciple2.getText()),
+                            Double.parseDouble(tfInterest2.getText()), Double.parseDouble(tfPeriods2.getText()),
+                            Double.parseDouble(tfFutureVal2.getText())));
+                    tfPMT.setText(payment.toString());
+                }else if(tfInterest2.getText().isEmpty()){
+                throw new IllegalArgumentException ();
+            }
+            }catch(NumberFormatException e2){
+                Alert error2 = new Alert(Alert.AlertType.ERROR);
+                error2.setTitle("Error");
+                error2.setHeaderText("Please leave only 1 field empty !");
+                error2.setContentText(" * also make sure you enter ONLY Numbers ");
+                error2.showAndWait();
+            }
+            catch (IllegalArgumentException intempty ){
+                Alert intError = new Alert(Alert.AlertType.ERROR);
+                intError.setTitle("Error");
+                intError.setHeaderText("Sorry, Interest calculation cannot be performed.");
+                intError.setContentText("Do not leave the I/Y(Interest) field Empty.");
+                intError.showAndWait();
+
+            }
+
+        });
+
+
+        inputSavingsTwo.getChildren().addAll(lblheading2,lblStartPrinciple2,lblPeriods2,lblInterest2,lblFutureVal2,
+                                        tfStartPrinciple2,tfPeriods2,tfInterest2,tfFutureVal2,tfPMT,lblPMT,calculate2);
         inputSavingsTwo.setLayoutX(40);
         inputSavingsTwo.setLayoutY(120);
-        inputSavingsTwo.setPrefSize(500,500);
+        inputSavingsTwo.setPrefSize(500,450);
         inputSavingsTwo.setPadding(new Insets(20,40,20,40));
         inputSavingsTwo.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(20),Insets.EMPTY)));
 
@@ -199,7 +236,7 @@ public class FinanceCalculator extends Application {
 
         compoundscene2= new Scene(compoundSavingsTwo,925,660);
 
-        //AnchorPane to anchor scene 3
+        //AnchorPane to anchor mortgage scene
         AnchorPane mortgage = new AnchorPane();
 
         Pane inputMortgage = new Pane();
@@ -250,10 +287,11 @@ public class FinanceCalculator extends Application {
         calculate3.setLayoutX(180);
         calculate3.setLayoutY(340);
 
-        inputMortgage.getChildren().addAll(lblheading3,lblhomePrice,lbldownPaymor,lblMorLoanTerm,lblInterestRateMor,tfhomePrice,tfdownPaymentMor,tfinterestRate,tfMorloanTerm,calculate3);
+        inputMortgage.getChildren().addAll(lblheading3,lblhomePrice,lbldownPaymor,lblMorLoanTerm,lblInterestRateMor,
+                                            tfhomePrice,tfdownPaymentMor,tfinterestRate,tfMorloanTerm,calculate3);
         inputMortgage.setLayoutX(40);
         inputMortgage.setLayoutY(120);
-        inputMortgage.setPrefSize(500,400);
+        inputMortgage.setPrefSize(500,450);
         inputMortgage.setPadding(new Insets(20,40,20,40));
         inputMortgage.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(20),Insets.EMPTY)));
 
@@ -262,7 +300,7 @@ public class FinanceCalculator extends Application {
 
         mortgagescene= new Scene(mortgage,925,660);
 
-        //AnchorPane to anchor scene 4
+        //AnchorPane to anchor Loan scene
         AnchorPane loan = new AnchorPane();
 
         Pane inputLoan = new Pane();
@@ -313,7 +351,8 @@ public class FinanceCalculator extends Application {
         calculate4.setLayoutX(180);
         calculate4.setLayoutY(340);
 
-        inputLoan.getChildren().addAll(lblheading4,lblPrice,lbldownpayloan,lblLoanTerm,lblloanInterest,tfPrice,tfdownpayloan,tfloanInterest,tfloanTerm,calculate4);
+        inputLoan.getChildren().addAll(lblheading4,lblPrice,lbldownpayloan,lblLoanTerm,lblloanInterest,tfPrice,
+                                        tfdownpayloan,tfloanInterest,tfloanTerm,calculate4);
         inputLoan.setLayoutX(40);
         inputLoan.setLayoutY(120);
         inputLoan.setPrefSize(500,400);
@@ -390,8 +429,8 @@ public class FinanceCalculator extends Application {
     }
 
     //method to calculate future value in the compound savings without payment
-    public static String getsimpleFutureVal(double startprincipal ,double periods ,double interest){
-        double futurevalue = startprincipal * (Math.pow((1+((interest/100)/12)),12*periods));
+    public static String getsimpleFutureVal(double startprinciple ,double periods ,double interest){
+        double futurevalue = startprinciple * (Math.pow((1+((interest/100)/12)),12*periods));
         return String.valueOf(Math.round(futurevalue *100.0)/100.0);
     }
     //method to calculate periods in the compound savings without payment
@@ -409,6 +448,31 @@ public class FinanceCalculator extends Application {
         double startprinciple = futurevalue/Math.pow((1+(interest/100)/12),12*periods);
         return String.valueOf(Math.round(startprinciple * 100.0)/100.0);
     }
+    //method to calculate Start Principle in the Compound Savings With Payment
+    public static String getcompoundStartPrinciple(double futurevalue,double inte,double periods, double PMT){
+        double interest = inte/100;
+        double startprinciple = (futurevalue-(PMT*((Math.pow((1+(interest/12)),12*periods)-1)/(interest/12))))/(Math.pow((1+(interest/12)),12*periods));
+        return String.valueOf(Math.round(startprinciple*100.0)/100.0);
+    }
+    //method to calculate Future Value in the Compound Savings with Payment
+    public static String getcompoundFutureVal(double startprinciple,double inte,double periods,double PMT){
+        double interest = inte/100;
+        double futureval = (startprinciple*Math.pow((1+(interest/12)),(12*periods)))+(PMT*((Math.pow((1+(interest/12)),(12*periods))-1)/(interest/12)));
+        return String.valueOf(Math.round(futureval*100.0)/100.0);
+    }
+    //method to calculate No.ofPeriods in the Compound Savings with Payment
+    public static String getcompoundPeriods(double startprinciple,double inte,double PMT,double futurevalue){
+        double interest = inte/100;
+        double periods = Math.log(((((interest*futurevalue)/12)+PMT)/(((startprinciple* interest)/12)+PMT)))/(12*Math.log(1+(interest/12)));
+        return String.valueOf(Math.round(periods*100.0)/100.0);
+    }
+    //method to calculate PMT in the compound Savings with Payment
+    public static String getcompoundPMT(double startprinciple,double inte,double periods,double futureval){
+        double interest = inte/100;
+        double payment =   (futureval-(startprinciple*Math.pow((1+(interest/12)),(12*periods))))/((Math.pow((1+(interest/12)),(12*periods))-1)/(interest/12));
+        return String.valueOf(Math.round(payment*100.0)/100.0);
+    }
+
 
     public static void main(String[] args) {
         launch(args);
