@@ -261,6 +261,10 @@ public class FinanceCalculator extends Application {
         lblInterestRateMor.setLayoutX(30);
         lblInterestRateMor.setLayoutY(260);
 
+        Label lblMonthPayMor = new Label("Monthly Payment");
+        lblMonthPayMor.setLayoutX(30);
+        lblMonthPayMor.setLayoutY(310);
+
         TextField tfhomePrice = new TextField();
         tfhomePrice.setPrefWidth(300);
         tfhomePrice.setLayoutY(105);
@@ -276,19 +280,69 @@ public class FinanceCalculator extends Application {
         tfMorloanTerm.setLayoutY(205);
         tfMorloanTerm.setLayoutX(170);
 
-        TextField tfinterestRate = new TextField();
-        tfinterestRate.setPrefWidth(300);
-        tfinterestRate.setLayoutY(255);
-        tfinterestRate.setLayoutX(170);
+        TextField tfinterestMor = new TextField();
+        tfinterestMor.setPrefWidth(300);
+        tfinterestMor.setLayoutY(255);
+        tfinterestMor.setLayoutX(170);
+
+        TextField tfmonthPayMor = new TextField();
+        tfmonthPayMor.setPrefWidth(300);
+        tfmonthPayMor.setLayoutY(305);
+        tfmonthPayMor.setLayoutX(170);
 
         Button calculate3 = new Button("Calculate");
         calculate3.setPrefWidth(100);
         calculate3.setPrefHeight(30);
         calculate3.setLayoutX(180);
-        calculate3.setLayoutY(340);
+        calculate3.setLayoutY(375);
+
+        //the code related to calculations of the Mortgage Calculator
+        calculate3.setOnAction( e2 -> {
+            try {  if (tfmonthPayMor.getText().isEmpty()) {
+                Double monthlyPayMor = Double.valueOf(getmonthPay(Double.parseDouble(tfhomePrice.getText()),
+                        Double.parseDouble(tfdownPaymentMor.getText()),Double.parseDouble(tfMorloanTerm.getText()),
+                        Double.parseDouble(tfinterestMor.getText())));
+                tfmonthPayMor.setText(monthlyPayMor.toString());
+            } else if (tfdownPaymentMor.getText().isEmpty()) {
+                Double downpay = Double.valueOf(getDownPay(Double.parseDouble(tfhomePrice.getText()),
+                        Double.parseDouble(tfMorloanTerm.getText()), Double.parseDouble(tfmonthPayMor.getText()),
+                        Double.parseDouble(tfinterestMor.getText())));
+                tfdownPaymentMor.setText(downpay.toString());
+            } else if (tfMorloanTerm.getText().isEmpty()) {
+                Double terms = Double.valueOf(getMorTerms(Double.parseDouble(tfhomePrice.getText()),
+                        Double.parseDouble(tfdownPaymentMor.getText()), Double.parseDouble(tfmonthPayMor.getText()),
+                        Double.parseDouble(tfinterestMor.getText())));
+                tfMorloanTerm.setText(terms.toString());
+            } else if (tfhomePrice.getText().isEmpty()) {
+                    Double homeprice = Double.valueOf(gethousePrice(Double.parseDouble(tfdownPaymentMor.getText()),
+                            Double.parseDouble(tfmonthPayMor.getText()), Double.parseDouble(tfMorloanTerm.getText()),
+                            Double.parseDouble(tfinterestMor.getText())));
+                    tfhomePrice.setText(homeprice.toString());
+            }else if(tfinterestMor.getText().isEmpty()){
+                throw new IllegalArgumentException ();
+            }
+            }catch(NumberFormatException e3){
+                Alert error2 = new Alert(Alert.AlertType.ERROR);
+                error2.setTitle("Error");
+                error2.setHeaderText("Please leave only 1 field empty !");
+                error2.setContentText(" * also make sure you enter ONLY Numbers ");
+                error2.showAndWait();
+            }
+            catch (IllegalArgumentException intempty ){
+                Alert intError = new Alert(Alert.AlertType.ERROR);
+                intError.setTitle("Error");
+                intError.setHeaderText("Sorry, Interest calculation cannot be performed.");
+                intError.setContentText("Do not leave the Interest Rate field Empty.");
+                intError.showAndWait();
+
+            }
+
+        });
+
+
 
         inputMortgage.getChildren().addAll(lblheading3,lblhomePrice,lbldownPaymor,lblMorLoanTerm,lblInterestRateMor,
-                                            tfhomePrice,tfdownPaymentMor,tfinterestRate,tfMorloanTerm,calculate3);
+                                lblMonthPayMor,tfhomePrice,tfdownPaymentMor,tfinterestMor,tfMorloanTerm,tfmonthPayMor,calculate3);
         inputMortgage.setLayoutX(40);
         inputMortgage.setLayoutY(120);
         inputMortgage.setPrefSize(500,450);
@@ -472,9 +526,32 @@ public class FinanceCalculator extends Application {
         double payment =   (futureval-(startprinciple*Math.pow((1+(interest/12)),(12*periods))))/((Math.pow((1+(interest/12)),(12*periods))-1)/(interest/12));
         return String.valueOf(Math.round(payment*100.0)/100.0);
     }
-
-
+    //method to calculate monthly payment in the Mortgage Calculator
+    public static String getmonthPay(double housep,double downpay,double term ,double inte){
+        double interest = inte/100;
+        double payment = ((housep-downpay)*(interest/12)*Math.pow((1+(interest/12)),12*term))/(Math.pow((1+(interest/12)),12*term)-1);
+        return  String.valueOf(Math.round(payment*100.0)/100.0);
+    }
+    //method to calculate downpayment in the mortgage calculator
+    public static String getDownPay(double housep,double term,double monthpay,double inte){
+        double interest = inte / 100 ;
+        double payment = housep - ((12*monthpay*(Math.pow((1+(interest/12)),12*term)-1))/(interest*Math.pow((1+(interest/12)),12*term)));
+        return String.valueOf(Math.round(payment*100.0)/100.0);
+    }
+    //method to calculate no of terms in the mortgage calculator
+    public static String getMorTerms(double housep, double downpay,double monthpay,double inte){
+        double interest = inte / 100 ;
+        double terms  =  (Math.log((monthpay/(monthpay-((interest/12)*(housep-downpay))))))/(12*Math.log(1+(interest/12)));
+        return String.valueOf(Math.round(terms*100.0)/100.0);
+    }
+    //method to calculate house price in the mortgage calculator
+    public static String gethousePrice(double downpay, double monthpay,double terms,double inte) {
+        double interest = inte / 100;
+        double houseprice = downpay + ((12 * monthpay * (Math.pow((1 + (interest / 12)), (12 * terms)) - 1)) / (interest * Math.pow((1 + (interest / 12)), (12 * terms))));
+        return String.valueOf(Math.round(houseprice * 100.0) / 100.0);
+    }
     public static void main(String[] args) {
         launch(args);
     }
 }
+
