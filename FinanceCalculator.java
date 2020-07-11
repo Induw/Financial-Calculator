@@ -24,6 +24,8 @@ public class FinanceCalculator extends Application {
         mainStage = primaryStage;
         mainStage.setTitle("Financial Calculator");
 
+// Code related to the Compound Savings Calculator(lump sum)
+
         //adding an anchorpane to hold everything related to scene1
         AnchorPane compoundSavingsOne = new AnchorPane();
         //adding a Pane to hold the Labels and Textfields related to user input in Compound Savings
@@ -75,7 +77,7 @@ public class FinanceCalculator extends Application {
         calculate.setLayoutX(180);
         calculate.setLayoutY(340);
 
-        //the code related to calculations of compound savings without payment
+        //Calculations of compound savings without payment
         calculate.setOnAction( e -> {
             try {
                 if (tfFutureVal.getText().isEmpty()) {
@@ -94,13 +96,11 @@ public class FinanceCalculator extends Application {
                     Double startprinciple = Double.valueOf(getsimpleStartPrinicple(Double.parseDouble(tfPeriods.getText()),
                             Double.parseDouble(tfInterest.getText()), Double.parseDouble(tfFutureVal.getText())));
                     tfStartPrinciple.setText(startprinciple.toString());
+                }else {
+                    showFullError();
                 }
             }catch(NumberFormatException e1){
-                Alert error = new Alert(Alert.AlertType.ERROR);
-                error.setTitle("Error");
-                error.setHeaderText("Please leave only 1 field empty !");
-                error.setContentText(" * also make sure you enter ONLY Numbers ");
-                error.showAndWait();
+                showEmptyError();
             }
 
         });
@@ -117,9 +117,9 @@ public class FinanceCalculator extends Application {
 
         compoundscene1= new Scene(compoundSavingsOne, 925, 660);
 
+//Code related to the Compound Savings with Payment Calculator
 
         //Anchorpane to hold everything related to CompoundSavings2 scene
-
         AnchorPane compoundSavingsTwo = new AnchorPane();
         //adding a Pane to hold the Labels and Textfields related to user input in Compound Savings with Payment
         Pane inputSavingsTwo = new Pane();
@@ -203,21 +203,14 @@ public class FinanceCalculator extends Application {
                     tfPMT.setText(payment.toString());
                 }else if(tfInterest2.getText().isEmpty()){
                 throw new IllegalArgumentException ();
+                } else {
+                    showFullError();
             }
             }catch(NumberFormatException e2){
-                Alert error2 = new Alert(Alert.AlertType.ERROR);
-                error2.setTitle("Error");
-                error2.setHeaderText("Please leave only 1 field empty !");
-                error2.setContentText(" * also make sure you enter ONLY Numbers ");
-                error2.showAndWait();
+               showEmptyError();
             }
             catch (IllegalArgumentException intempty ){
-                Alert intError = new Alert(Alert.AlertType.ERROR);
-                intError.setTitle("Error");
-                intError.setHeaderText("Sorry, Interest calculation cannot be performed.");
-                intError.setContentText("Do not leave the I/Y(Interest) field Empty.");
-                intError.showAndWait();
-
+                showInterestError();
             }
 
         });
@@ -233,9 +226,9 @@ public class FinanceCalculator extends Application {
 
         compoundSavingsTwo.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE,CornerRadii.EMPTY,Insets.EMPTY)));
         compoundSavingsTwo.getChildren().addAll(addButtons(),inputSavingsTwo,addCustKeyboard());
-
         compoundscene2= new Scene(compoundSavingsTwo,925,660);
 
+//Code related to Mortgage Calculator
         //AnchorPane to anchor mortgage scene
         AnchorPane mortgage = new AnchorPane();
 
@@ -245,7 +238,7 @@ public class FinanceCalculator extends Application {
         lblheading3.setLayoutX(160);
         lblheading3.setLayoutY(40);
 
-        Label lblhomePrice = new Label("Home Price");
+        Label lblhomePrice = new Label("House Price");
         lblhomePrice.setLayoutX(30);
         lblhomePrice.setLayoutY(110);
 
@@ -253,7 +246,7 @@ public class FinanceCalculator extends Application {
         lbldownPaymor.setLayoutX(30);
         lbldownPaymor.setLayoutY(160);
 
-        Label lblMorLoanTerm = new Label("Loan Term");
+        Label lblMorLoanTerm = new Label("Loan Term (Years)");
         lblMorLoanTerm.setLayoutX(30);
         lblMorLoanTerm.setLayoutY(210);
 
@@ -296,7 +289,7 @@ public class FinanceCalculator extends Application {
         calculate3.setLayoutX(180);
         calculate3.setLayoutY(375);
 
-        //the code related to calculations of the Mortgage Calculator
+        // calculations of the Mortgage Calculator
         calculate3.setOnAction( e2 -> {
             try {  if (tfmonthPayMor.getText().isEmpty()) {
                 Double monthlyPayMor = Double.valueOf(getmonthPay(Double.parseDouble(tfhomePrice.getText()),
@@ -320,20 +313,14 @@ public class FinanceCalculator extends Application {
                     tfhomePrice.setText(homeprice.toString());
             }else if(tfinterestMor.getText().isEmpty()){
                 throw new IllegalArgumentException ();
+            }else {
+                showFullError();
             }
             }catch(NumberFormatException e3){
-                Alert error2 = new Alert(Alert.AlertType.ERROR);
-                error2.setTitle("Error");
-                error2.setHeaderText("Please leave only 1 field empty !");
-                error2.setContentText(" * also make sure you enter ONLY Numbers ");
-                error2.showAndWait();
+               showEmptyError();
             }
             catch (IllegalArgumentException intempty ){
-                Alert intError = new Alert(Alert.AlertType.ERROR);
-                intError.setTitle("Error");
-                intError.setHeaderText("Sorry, Interest calculation cannot be performed.");
-                intError.setContentText("Do not leave the Interest Rate field Empty.");
-                intError.showAndWait();
+                showInterestError();
 
             }
 
@@ -354,6 +341,9 @@ public class FinanceCalculator extends Application {
 
         mortgagescene= new Scene(mortgage,925,660);
 
+
+// Code related to Loan Calculator
+
         //AnchorPane to anchor Loan scene
         AnchorPane loan = new AnchorPane();
 
@@ -363,36 +353,36 @@ public class FinanceCalculator extends Application {
         lblheading4.setLayoutX(160);
         lblheading4.setLayoutY(40);
 
-        Label lblPrice = new Label("Price");
-        lblPrice.setLayoutX(30);
-        lblPrice.setLayoutY(110);
+        Label lblAmount = new Label("Loan Amount");
+        lblAmount.setLayoutX(30);
+        lblAmount.setLayoutY(110);
 
-        Label lblLoanTerm = new Label("Loan Term");
+        Label lblLoanTerm = new Label("Loan Term (months)");
         lblLoanTerm.setLayoutX(30);
         lblLoanTerm.setLayoutY(160);
 
-        Label lbldownpayloan = new Label("Down Payment");
-        lbldownpayloan.setLayoutX(30);
-        lbldownpayloan.setLayoutY(210);
+        Label lblmonthpayloan = new Label("Monthly Payment");
+        lblmonthpayloan.setLayoutX(30);
+        lblmonthpayloan.setLayoutY(210);
 
         Label lblloanInterest= new Label("Interest Rate");
         lblloanInterest.setLayoutX(30);
         lblloanInterest.setLayoutY(260);
 
-        TextField tfPrice = new TextField();
-        tfPrice.setPrefWidth(300);
-        tfPrice.setLayoutY(105);
-        tfPrice.setLayoutX(170);
+        TextField tfAmount = new TextField();
+        tfAmount.setPrefWidth(300);
+        tfAmount.setLayoutY(105);
+        tfAmount.setLayoutX(170);
 
         TextField tfloanTerm = new TextField();
         tfloanTerm.setPrefWidth(300);
         tfloanTerm.setLayoutY(155);
         tfloanTerm.setLayoutX(170);
 
-        TextField tfdownpayloan = new TextField();
-        tfdownpayloan.setPrefWidth(300);
-        tfdownpayloan.setLayoutY(205);
-        tfdownpayloan.setLayoutX(170);
+        TextField tfmonthpayloan = new TextField();
+        tfmonthpayloan.setPrefWidth(300);
+        tfmonthpayloan.setLayoutY(205);
+        tfmonthpayloan.setLayoutX(170);
 
         TextField tfloanInterest = new TextField();
         tfloanInterest.setPrefWidth(300);
@@ -405,8 +395,37 @@ public class FinanceCalculator extends Application {
         calculate4.setLayoutX(180);
         calculate4.setLayoutY(340);
 
-        inputLoan.getChildren().addAll(lblheading4,lblPrice,lbldownpayloan,lblLoanTerm,lblloanInterest,tfPrice,
-                                        tfdownpayloan,tfloanInterest,tfloanTerm,calculate4);
+        //calculations of loan calculator
+        calculate4.setOnAction( e3 -> {
+            try {
+                if (tfmonthpayloan.getText().isEmpty()) {
+                    Double monthlypay = Double.valueOf(getloanMonthpay(Double.parseDouble(tfAmount.getText()),
+                            Double.parseDouble(tfloanTerm.getText()), Double.parseDouble(tfloanInterest.getText())));
+                    tfmonthpayloan.setText(monthlypay.toString());
+                } else if (tfAmount.getText().isEmpty()) {
+                    Double amount = Double.valueOf(getAmount(Double.parseDouble(tfmonthpayloan.getText()),
+                            Double.parseDouble(tfloanTerm.getText()), Double.parseDouble(tfloanInterest.getText())));
+                    tfAmount.setText(amount.toString());
+                } else if (tfloanTerm.getText().isEmpty()) {
+                    Double loanTerm = Double.valueOf(getloanTerm(Double.parseDouble(tfmonthpayloan.getText()),
+                            Double.parseDouble(tfAmount.getText()), Double.parseDouble(tfloanInterest.getText())));
+                    tfloanTerm.setText(loanTerm.toString());
+                }else if(tfloanInterest.getText().isEmpty()){
+                    throw new IllegalArgumentException ();
+                } else {
+                    showFullError();
+                }
+            }catch(NumberFormatException e1){
+                showEmptyError();
+            }catch (IllegalArgumentException intempty ){
+                showInterestError();
+
+            }
+
+        });
+
+        inputLoan.getChildren().addAll(lblheading4,lblAmount,lblmonthpayloan,lblLoanTerm,lblloanInterest,tfAmount,
+                                        tfmonthpayloan,tfloanInterest,tfloanTerm,calculate4);
         inputLoan.setLayoutX(40);
         inputLoan.setLayoutY(120);
         inputLoan.setPrefSize(500,400);
@@ -422,8 +441,8 @@ public class FinanceCalculator extends Application {
         mainStage.setScene(compoundscene1);
         mainStage.show();
     }
+    //to add an HBox for the buttons on top
     public  HBox addButtons(){
-        //to add an HBox for the buttons on top
         HBox top = new HBox();
         Button b1 = new Button("Compound Savings");
         Button b2 = new Button("Compound Savings w/Payment");
@@ -480,6 +499,30 @@ public class FinanceCalculator extends Application {
         keyboard.add(dot,1,3);
         keyboard.add(del,2,3);
         return keyboard;
+    }
+    //method to show the error when user fills in all the fields and click the calculate button
+    public void showFullError(){
+        Alert fullerror = new Alert(Alert.AlertType.ERROR);
+        fullerror.setTitle("Error");
+        fullerror.setHeaderText("All fields full !");
+        fullerror.setContentText("Please leave the field you want to calculate empty.");
+        fullerror.showAndWait();
+    }
+    //method to show Error alert when user leaves two or more fields empty or when user enters other characters
+    public void showEmptyError(){
+        Alert error = new Alert(Alert.AlertType.ERROR);
+        error.setTitle("Error");
+        error.setHeaderText("Please leave only 1 field empty !");
+        error.setContentText(" * also make sure you enter ONLY Numbers ");
+        error.showAndWait();
+    }
+    //method to show Error when user leaves the interest field empty
+    public void showInterestError() {
+        Alert intError = new Alert(Alert.AlertType.ERROR);
+        intError.setTitle("Error");
+        intError.setHeaderText("Sorry, Interest calculation cannot be performed.");
+        intError.setContentText("Do not leave the 'Interest' field Empty.");
+        intError.showAndWait();
     }
 
     //method to calculate future value in the compound savings without payment
@@ -547,11 +590,31 @@ public class FinanceCalculator extends Application {
     //method to calculate house price in the mortgage calculator
     public static String gethousePrice(double downpay, double monthpay,double terms,double inte) {
         double interest = inte / 100;
-        double houseprice = downpay + ((12 * monthpay * (Math.pow((1 + (interest / 12)), (12 * terms)) - 1)) / (interest * Math.pow((1 + (interest / 12)), (12 * terms))));
+        double houseprice = downpay+((12*monthpay*(Math.pow((1+(interest/12)),(12*terms))-1))/(interest*Math.pow((1+(interest/12)),(12*terms))));
         return String.valueOf(Math.round(houseprice * 100.0) / 100.0);
     }
+    //method to calculate monthly payment in the loan calculator
+    public static String getloanMonthpay(double amount ,double term ,double inte){
+        double interest = inte / 100;
+        double monthpay =  (amount * interest) / (1 - (1 / Math.pow((1 + interest), term)));
+        return String.valueOf(Math.round(monthpay *100.0)/100.0);
+    }
+    //method to calculate loan amount in the loan calculator
+    public static String getAmount(double monthpay,double term , double inte ){
+        double interest = inte / 100 ;
+        double amount = (monthpay / interest) * (1 - (1 / Math.pow((1 + interest), term)));
+        return String.valueOf(Math.round(amount*100.0)/100.0);
+    }
+    //method to calculate loan terms in the loan calculator
+    public static String getloanTerm(double monthpay,double amount, double inte ){
+        double interest = inte / 100 ;
+        double terms = Math.log((monthpay/interest)/((monthpay/interest)-amount))/Math.log(1 + interest);
+        return String.valueOf(Math.round(terms*100.0)/100.0);
+    }
+
     public static void main(String[] args) {
         launch(args);
+
     }
 }
 
