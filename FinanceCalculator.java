@@ -6,10 +6,12 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -19,12 +21,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import static java.lang.String.valueOf;
 
 
 public class FinanceCalculator extends Application {
@@ -150,7 +148,8 @@ public class FinanceCalculator extends Application {
             if(pchart != null){
                 pchart.getData().clear();
             }
-            Double interestvalue = Double.parseDouble(tfFutureVal.getText()) - Double.parseDouble(tfStartPrinciple.getText());
+            Double interestvalue = Double.parseDouble(tfFutureVal.getText()) -
+                    Double.parseDouble(tfStartPrinciple.getText());
             pchart = getChart(Double.parseDouble(tfStartPrinciple.getText()),interestvalue);
             compoundSavingsOne.getChildren().add(pchart);
         });
@@ -416,7 +415,7 @@ public class FinanceCalculator extends Application {
         calculate3.setPrefWidth(100);
         calculate3.setPrefHeight(30);
         calculate3.setLayoutX(180);
-        calculate3.setLayoutY(372);
+        calculate3.setLayoutY(378);
         styleCalculate(calculate3);
 
         //adding a button to clear textfields and piechart
@@ -719,20 +718,28 @@ public class FinanceCalculator extends Application {
         b4.setOnAction(e -> mainStage.setScene(loanscene));
         //popup window for help view
         b5.setOnAction(event -> {
-                      Stage popupwindow=new Stage();
-                        popupwindow.initModality(Modality.APPLICATION_MODAL);
-                        popupwindow.setTitle("Help");
-                        Label label1= new Label("Pop up window now displayed");
-                        Button button1= new Button("Close this pop up window");
-                        button1.setOnAction(e -> popupwindow.close());
-                        VBox layout= new VBox(10);
-                        layout.getChildren().addAll(label1, button1);
-                        layout.setAlignment(Pos.CENTER);
-                        Scene scene1= new Scene(layout, 300, 250);
-                        popupwindow.setScene(scene1);
-                        popupwindow.showAndWait();
+            Stage popupwindow=new Stage();
+            popupwindow.initModality(Modality.APPLICATION_MODAL);
+            popupwindow.setTitle("Help");
+            Label label1 = new Label("          Financial Calculator Tips ");
+            label1.setLayoutY(2);
+            label1.setFont((Font.font("Segoe UI", FontWeight.BOLD, FontPosture.REGULAR, 18)));
+            Label label2 = new Label("➤ To use the calculator, leave the textfield\n  you want to calculate, Empty.");
+            Label label3 = new Label("➤ Interest can be calculated only\n  in Compound Savings without payment");
+            Label label4 = new Label("➤ You can use the onscreen keyboard to type \n  in the fields with ease");
+            Label label5 = new Label("➤ After every Calculation, a PieChart \n  will be displayed.");
+            Button close = new Button("Close");
+            close.setOnAction(e-> popupwindow.close());
+            close.setAlignment(Pos.BASELINE_CENTER);
+            VBox layout= new VBox(15);
+            layout.setLayoutX(3);
+            layout.getChildren().addAll(label1,label2,label3,label4,label5,close);
+            layout.setAlignment(Pos.TOP_LEFT);
+            Scene scene1= new Scene(layout, 350, 350);
+            popupwindow.setScene(scene1);
+            popupwindow.showAndWait();
 
-                    });
+        });
 
         top.setAlignment(Pos.CENTER);
         top.setLayoutX(10);
@@ -950,7 +957,8 @@ public class FinanceCalculator extends Application {
                 20));
         cal.setCursor(Cursor.HAND);
         cal.setOnMouseEntered(e ->
-            getHovereffect(cal));
+                cal.setBackground(new Background(new BackgroundFill(Color.web("#29a64f"),new CornerRadii(7),
+                        Insets.EMPTY))));
         cal.setOnMouseExited(e1 ->
                 getNormaleffect(cal));
 
@@ -1025,7 +1033,7 @@ public class FinanceCalculator extends Application {
                 FontWeight.BOLD,
                 FontPosture.REGULAR,
                 14));
-        clear.setPrefSize(70,23);
+        clear.setPrefSize(75,25);
         clear.setBackground(new Background(new BackgroundFill(Color.web("#d8f2ec"),new CornerRadii(7),
                 Insets.EMPTY)));
         clear.setOnMouseEntered(e-> {
